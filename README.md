@@ -159,4 +159,3 @@ postman/                   Postman collection
 - [x] Postman collection
 - [x] Docker Hub image paths (published under `surajpandey01`)
 - [x] Demo video recording
-- [ ] GitHub repository link
