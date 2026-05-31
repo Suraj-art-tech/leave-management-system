@@ -114,10 +114,15 @@ All users share password: `Password@123`
 
 ## Demo video
 
-| Scenario | Link |
-|---|---|
-| Apply leave — success flow | https://youtu.be/cc9Xf20wx-I |
-| Rejected leave flow | https://youtu.be/mNyCesjcDxs |
+Click a thumbnail to play the walkthrough on YouTube.
+
+### Apply leave — success flow
+
+[![Apply leave — success flow](https://img.youtube.com/vi/cc9Xf20wx-I/hqdefault.jpg)](https://youtu.be/cc9Xf20wx-I)
+
+### Rejected leave flow
+
+[![Rejected leave flow](https://img.youtube.com/vi/mNyCesjcDxs/hqdefault.jpg)](https://youtu.be/mNyCesjcDxs)
 
 ## Project structure
 
