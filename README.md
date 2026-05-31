@@ -117,7 +117,7 @@ All users share password: `Password@123`
 | Scenario | Link |
 |---|---|
 | Apply leave — success flow | https://youtu.be/cc9Xf20wx-I |
-| Rejected leave flow | https://youtu.be/mHFCtwSO7y0 |
+| Rejected leave flow | https://youtu.be/mNyCesjcDxs |
 
 ## Project structure
 
