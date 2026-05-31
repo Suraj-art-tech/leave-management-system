@@ -36,11 +36,22 @@ docker compose up
 
 Services:
 
-| Service | URL |
+| Service | URL | Health |
+|---|---|---|
+| API Gateway (public entry) | http://localhost:3000 | http://localhost:3000/health |
+| auth-service | http://localhost:3001 | http://localhost:3001/health |
+| employee-service | http://localhost:3002 | http://localhost:3002/health |
+| leave-service | http://localhost:3003 | http://localhost:3003/health |
+| notification-service | http://localhost:3004 | http://localhost:3004/health |
+
+Infrastructure & dashboards:
+
+| Component | URL |
 |---|---|
-| API Gateway | http://localhost:3000 |
-| Consul UI | http://localhost:8500 |
+| Consul UI (service registry) | http://localhost:8500 |
 | RabbitMQ Management | http://localhost:15672 (guest/guest) |
+
+> All client traffic goes through the **API Gateway** on port `3000` (prefix `/api`). The individual service ports (`3001`–`3004`) are exposed mainly for health checks and debugging.
 
 ## Docker Hub images
 
