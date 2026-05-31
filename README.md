@@ -114,7 +114,10 @@ All users share password: `Password@123`
 
 ## Demo video
 
-> Add your 5–10 minute demo recording link here before submission.
+| Scenario | Link |
+|---|---|
+| Apply leave — success flow | https://youtu.be/cc9Xf20wx-I |
+| Rejected leave flow | https://youtu.be/mHFCtwSO7y0 |
 
 ## Project structure
 
@@ -139,5 +142,5 @@ postman/                   Postman collection
 - [x] docker-compose.yml
 - [x] Postman collection
 - [x] Docker Hub image paths (published under `surajpandey01`)
-- [ ] Demo video recording
+- [x] Demo video recording
 - [ ] GitHub repository link
