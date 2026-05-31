@@ -1,0 +1,19 @@
+{
+  "name": "leave-management-system",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "dev:auth": "npm run dev -w auth-service",
+    "dev:leave": "npm run dev -w leave-service",
+    "dev:gateway": "npm run dev -w api-gateway",
+    "dev:employee": "npm run dev -w employee-service",
+    "build": "npm run build --workspaces --if-present",
+    "dev:notification": "npm run dev -w notification-service"
+  },
+  "packageManager": "yarn@1.22.22"
+}

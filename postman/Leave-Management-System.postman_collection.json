@@ -1,0 +1,229 @@
+{
+  "info": {
+    "name": "Leave Management System",
+    "description": "Microservices Assignment 2026 - Leave Management Portal API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" },
+    { "key": "leaveId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Gateway Health",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (Employee - Bob)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "  pm.collectionVariables.set('token', res.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"bob.employee@lms.com\",\n  \"password\": \"Password@123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login (Manager - Alice)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "  pm.collectionVariables.set('token', res.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alice.manager@lms.com\",\n  \"password\": \"Password@123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login - Invalid credentials (fail)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"bob.employee@lms.com\",\n  \"password\": \"wrong\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Balances",
+      "item": [
+        {
+          "name": "Get My Balance",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/balances/me"
+          }
+        },
+        {
+          "name": "Get Balance Without Token (fail)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/balances/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Leaves",
+      "item": [
+        {
+          "name": "Apply Leave (success)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "  pm.collectionVariables.set('leaveId', res.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"leaveType\": \"CASUAL\",\n  \"startDate\": \"2026-06-10\",\n  \"endDate\": \"2026-06-11\",\n  \"days\": 2,\n  \"reason\": \"Personal work\",\n  \"reportingManagerId\": \"MGR001\"\n}"
+            },
+            "url": "{{baseUrl}}/api/leaves"
+          }
+        },
+        {
+          "name": "Apply Leave - Past Date (fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"leaveType\": \"CASUAL\",\n  \"startDate\": \"2020-01-01\",\n  \"endDate\": \"2020-01-02\",\n  \"days\": 2,\n  \"reason\": \"Past leave\",\n  \"reportingManagerId\": \"MGR001\"\n}"
+            },
+            "url": "{{baseUrl}}/api/leaves"
+          }
+        },
+        {
+          "name": "Get My Leave History",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/leaves/me?status=PENDING&page=1&limit=10"
+          }
+        },
+        {
+          "name": "Get Team Pending Leaves (Manager)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/leaves/team?status=PENDING"
+          }
+        },
+        {
+          "name": "Approve Leave (Manager)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/leaves/{{leaveId}}/approve"
+          }
+        },
+        {
+          "name": "Reject Leave (Manager)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Insufficient team coverage\"\n}"
+            },
+            "url": "{{baseUrl}}/api/leaves/{{leaveId}}/reject"
+          }
+        },
+        {
+          "name": "Cancel Leave (Employee)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/leaves/{{leaveId}}/cancel"
+          }
+        },
+        {
+          "name": "Cancel Leave - Not Pending (fail)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/leaves/{{leaveId}}/cancel"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get My Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/notifications/me"
+          }
+        }
+      ]
+    }
+  ]
+}

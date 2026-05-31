@@ -1,0 +1,152 @@
+services:
+  consul:
+    image: hashicorp/consul:1.16
+    container_name: consul
+    ports:
+      - "8500:8500"
+    command: agent -server -bootstrap-expect=1 -ui -client=0.0.0.0
+    healthcheck:
+      test: ["CMD", "consul", "members"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  auth-service:
+    image: surajpandey01/lms-auth-service:1.0.0
+    build:
+      context: .
+      dockerfile: services/auth-service/Dockerfile
+    container_name: auth-service
+    environment:
+      PORT: 3001
+      SERVICE_HOST: auth-service
+      JWT_SECRET: super-secret-leave-management-key-change-in-production
+      JWT_EXPIRES_IN: 1h
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      NOTIFICATION_SERVICE_URL: http://notification-service:3004
+      LOG_LEVEL: info
+    depends_on:
+      consul:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+
+  employee-service:
+    image: surajpandey01/lms-employee-service:1.0.0
+    build:
+      context: .
+      dockerfile: services/employee-service/Dockerfile
+    container_name: employee-service
+    environment:
+      PORT: 3002
+      SERVICE_HOST: employee-service
+      JWT_SECRET: super-secret-leave-management-key-change-in-production
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      AUTH_SERVICE_URL: http://auth-service:3001
+      NOTIFICATION_SERVICE_URL: http://notification-service:3004
+      LOG_LEVEL: info
+    depends_on:
+      consul:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    ports:
+      - "3002:3002"
+
+  leave-service:
+    image: surajpandey01/lms-leave-service:1.0.0
+    build:
+      context: .
+      dockerfile: services/leave-service/Dockerfile
+    container_name: leave-service
+    environment:
+      PORT: 3003
+      SERVICE_HOST: leave-service
+      JWT_SECRET: super-secret-leave-management-key-change-in-production
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      NOTIFICATION_EXCHANGE: leave.events
+      AUTH_SERVICE_URL: http://auth-service:3001
+      EMPLOYEE_SERVICE_URL: http://employee-service:3002
+      NOTIFICATION_SERVICE_URL: http://notification-service:3004
+      LOG_LEVEL: info
+    depends_on:
+      consul:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      employee-service:
+        condition: service_started
+    ports:
+      - "3003:3003"
+
+  notification-service:
+    image: surajpandey01/lms-notification-service:1.0.0
+    build:
+      context: .
+      dockerfile: services/notification-service/Dockerfile
+    container_name: notification-service
+    environment:
+      PORT: 3004
+      SERVICE_HOST: notification-service
+      JWT_SECRET: super-secret-leave-management-key-change-in-production
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      NOTIFICATION_EXCHANGE: leave.events
+      LOG_LEVEL: info
+    depends_on:
+      consul:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "3004:3004"
+
+  api-gateway:
+    image: surajpandey01/lms-api-gateway:1.0.0
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    container_name: api-gateway
+    environment:
+      PORT: 3000
+      SERVICE_HOST: api-gateway
+      JWT_SECRET: super-secret-leave-management-key-change-in-production
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      AUTH_SERVICE_URL: http://auth-service:3001
+      EMPLOYEE_SERVICE_URL: http://employee-service:3002
+      LEAVE_SERVICE_URL: http://leave-service:3003
+      NOTIFICATION_SERVICE_URL: http://notification-service:3004
+      LOG_LEVEL: info
+    depends_on:
+      consul:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      employee-service:
+        condition: service_started
+      leave-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+    ports:
+      - "3000:3000"

@@ -1,0 +1,36 @@
+{
+  "name": "@lms/shared",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.4",
+    "consul": "^1.2.0",
+    "fastify": "^4.28.1",
+    "fastify-plugin": "^4.5.1",
+    "jsonwebtoken": "^9.0.2",
+    "opossum": "^8.1.4",
+    "undici": "^6.19.2",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.5",
+    "@types/consul": "^0.40.3",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.14.10",
+    "@types/opossum": "^8.1.7",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.5.3"
+  }
+}
