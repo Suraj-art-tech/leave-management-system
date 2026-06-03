@@ -129,10 +129,12 @@ Click a thumbnail to play the walkthrough on YouTube.
 
 ### Apply leave — success flow
 
+# https://youtu.be/cc9Xf20wx-I
 [![Apply leave — success flow](https://img.youtube.com/vi/cc9Xf20wx-I/hqdefault.jpg)](https://youtu.be/cc9Xf20wx-I)
 
 ### Rejected leave flow
 
+# https://youtu.be/mNyCesjcDxs
 [![Rejected leave flow](https://img.youtube.com/vi/mNyCesjcDxs/hqdefault.jpg)](https://youtu.be/mNyCesjcDxs)
 
 ## Project structure
@@ -159,3 +161,4 @@ postman/                   Postman collection
 - [x] Postman collection
 - [x] Docker Hub image paths (published under `surajpandey01`)
 - [x] Demo video recording
+- [x] GitHub Link: https://github.com/Suraj-art-tech/leave-management-system
